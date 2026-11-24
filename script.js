@@ -586,3 +586,69 @@ contactForm.addEventListener('submit', async (e) => {
 
 /* Năm ở footer */
 document.getElementById('year').textContent = new Date().getFullYear();
+/* --------------------- MÀN HÌNH CHÀO (đánh máy) --------------------- */
+(function initIntro() {
+    const ONLY_ONCE_PER_SESSION = true;   // đổi thành false để hiện mỗi lần tải lại (tiện khi thử)
+
+    const intro = document.getElementById('intro');
+    if (!intro) return;
+
+    if (ONLY_ONCE_PER_SESSION) {
+        try {
+            if (sessionStorage.getItem('introSeen') === '1') { intro.remove(); return; }
+        } catch (err) { /* không có sessionStorage thì cứ hiện */ }
+    }
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const root = document.documentElement;
+    let finished = false;
+
+    root.classList.add('intro-lock');
+
+    function close() {
+        if (finished) return;
+        finished = true;
+        root.classList.remove('intro-lock');
+        intro.classList.add('hide');
+        try { sessionStorage.setItem('introSeen', '1'); } catch (err) {}
+        setTimeout(() => intro.remove(), 800);
+    }
+
+    intro.addEventListener('click', close);
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') close();
+    });
+
+    const wait = (ms) => new Promise(res => setTimeout(res, ms));
+
+    function typeLine(line, speed) {
+        return new Promise((resolve) => {
+            const done = line.querySelector('.t-done');
+            const rest = line.querySelector('.t-rest');
+            const text = rest.textContent;
+
+            if (reduceMotion) { done.textContent = text; rest.textContent = ''; resolve(); return; }
+
+            line.classList.add('typing');
+            let i = 0;
+            const timer = setInterval(() => {
+                if (finished) { clearInterval(timer); resolve(); return; }
+                i++;
+                done.textContent = text.slice(0, i);
+                rest.textContent = text.slice(i);
+                if (i >= text.length) { clearInterval(timer); resolve(); }
+            }, speed);
+        });
+    }
+
+    (async function run() {
+        const [title, url] = intro.querySelectorAll('[data-type]');
+        await wait(400);
+        await typeLine(title, 75);
+        title.classList.remove('typing');
+        await wait(250);
+        await typeLine(url, 45);
+        await wait(1000);
+        close();
+    })();
+})();
