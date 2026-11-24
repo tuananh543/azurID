@@ -291,9 +291,10 @@ ul { list-style: none; }
 }
 
 .about__lead {
-    font-family: var(--font-display);
-    font-size: clamp(1.05rem, 1.8vw, 1.35rem);
-    line-height: 1.5;
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: clamp(0.95rem, 1.5vw, 1.15rem);
+    line-height: 1.6;
 }
 
 .about__body p { color: var(--muted); margin-bottom: 1.8rem; max-width: 60ch; }
