@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#050510">
+    <meta name="description" content="Portfolio của [Tên của bạn] – Creative Fullstack Developer.">
+    <title>Azur Profile</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Nền 3D (Three.js vẽ vào canvas này) -->
+<canvas id="bg" aria-hidden="true"></canvas>
+
+<header class="header" id="header">
+    <nav class="nav container" aria-label="Điều hướng chính">
+        <a href="#home" class="logo">Azur Developer</a>
+
+        <ul class="nav__list" id="nav-list">
+            <li><a href="#about" class="nav__link">Giới thiệu</a></li>
+            <li><a href="#skills" class="nav__link">Kỹ năng</a></li>
+            <li><a href="#social" class="nav__link">Mạng xã hội</a></li>
+            <li><a href="#contact" class="nav__link">Liên hệ</a></li>
+        </ul>
+
+        <button class="nav__toggle" id="nav-toggle" aria-label="Mở menu" aria-expanded="false" aria-controls="nav-list">
+            <span></span><span></span>
+        </button>
+    </nav>
+</header>
+
+<!-- Thẻ tên treo dây, có thể kéo thả -->
+<div class="lanyard" id="lanyard">
+    <canvas id="lanyard-strap" aria-hidden="true"></canvas>
+    <div class="badge" id="badge" title="Kéo để lắc thẻ">
+        <span class="badge__clip" aria-hidden="true"></span>
+        <div class="badge__photo" data-initial="A">
+            <!-- Đặt ảnh của bạn tại assets/avatar.jpg -->
+            <img src="assets/avatar.jpg" alt="Lê Tuấn Anh" draggable="false" onerror="this.remove()">
+        </div>
+        <div class="badge__info">
+            <p class="badge__name">Lê Tuấn Anh</p>
+            <p class="badge__role">[Creative Developer]</p>
+        </div>
+        <p class="badge__hint" aria-hidden="true">Kéo thử xem</p>
+    </div>
+</div>
+
+<main>
+    <!-- ==== HERO ==== -->
+    <section class="hero container" id="home">
+        <p class="hero__hello">Xin chào, mình là</p>
+        <h1 class="hero__name">Lê Tuấn Anh</h1>
+        <p class="hero__role">[Creative Developer] – xây dựng website và ứng dụng mượt và đẹp.</p>
+        <div class="hero__actions">
+            <a href="#social" class="btn btn-primary">Kết nối</a>
+            <a href="#contact" class="btn btn-ghost">Liên hệ</a>
+        </div>
+        <a href="#about" class="hero__scroll" aria-label="Cuộn xuống"><span></span></a>
+    </section>
+
+    <!-- ==== ABOUT ==== -->
+    <section class="section container" id="about">
+        <h2 class="section__title">ABOUT ME</h2>
+        <div class="about">
+            <p class="about__lead">
+                [Viết 2–3 câu giới thiệu: bạn là ai, bạn làm gì và điều gì khiến bạn khác biệt.]
+            </p>
+            <div class="about__body">
+                <p>
+                    Nền tảng học vấn, kinh nghiệm, đam mê và mục tiêu nghề nghiệp.
+                </p>
+                <dl class="about__facts">
+                    <div><dt>Địa chỉ</dt><dd>Buôn Ma Thuột, Đắk Lắk, Việt Nam</dd></div>
+                    <div><dt>Email</dt><dd><a href="mailto:azurdevelop@gmail.com">azurdevelop@gmail.com</a></dd></div>
+                    <div><dt>Điện thoại</dt><dd><a href="tel:+84968969315">+84 96 8969 315</a></dd></div>
+                </dl>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==== SKILLS ==== -->
+    <section class="section container" id="skills">
+        <h2 class="section__title">Kỹ năng</h2>
+        <div class="skills">
+            <div class="skills__group">
+                <h3>Giao diện</h3>
+                <ul>
+                    <li>HTML5 &amp; CSS3</li>
+                    <li>JavaScript (ES6+)</li>
+                    <li>React.js</li>
+                    <li>Three.js / WebGL</li>
+                </ul>
+            </div>
+            <div class="skills__group">
+                <h3>Máy chủ</h3>
+                <ul>
+                    <li>Node.js &amp; Express</li>
+                    <li>REST API</li>
+                    <li>MySQL, PostgreSQL</li>
+                    <li>MongoDB, Firebase</li>
+                </ul>
+            </div>
+            <div class="skills__group">
+                <h3>Công cụ</h3>
+                <ul>
+                    <li>Git &amp; GitHub</li>
+                    <li>VS Code</li>
+                    <li>Figma</li>
+                    <li>Vercel, Railway</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==== SOCIAL ==== -->
+    <section class="section container" id="social">
+        <h2 class="section__title">Kết nối với mình</h2>
+        <ul class="socials">
+            <li>
+                <a href="https://www.facebook.com/share/1CsG2hJ383/" class="social" target="_blank" rel="noopener noreferrer">
+                    <span class="social__name">Facebook</span>
+                    <span class="social__handle">Lee Tuấnn Anhh</span>
+                    <span class="social__arrow" aria-hidden="true">↗</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.tiktok.com/@andy_kanima?_r=1&_t=ZS-9Bf5Ed1B3jz" class="social" target="_blank" rel="noopener noreferrer">
+                    <span class="social__name">TikTok</span>
+                    <span class="social__handle">Azur 💋</span>
+                    <span class="social__arrow" aria-hidden="true">↗</span>
+                </a>
+            </li>
+            <li>
+                <!-- WeChat không có link hồ sơ công khai, nên nút này sao chép ID WeChat -->
+                <button type="button" class="social" data-copy="your_wechat_id">
+                    <span class="social__name">WeChat</span>
+                    <span class="social__handle">ID: Suzuki_Katori</span>
+                    <span class="social__arrow" aria-hidden="true">⧉</span>
+                </button>
+            </li>
+            <li>
+                <a href="https://www.instagram.com/_tuanas.ank_?lqvp=ZWw0bGo1ZHVtbjhl" class="social" target="_blank" rel="noopener noreferrer">
+                    <span class="social__name">Instagram</span>
+                    <span class="social__handle">_Tuanas.Ank_</span>
+                    <span class="social__arrow" aria-hidden="true">↗</span>
+                </a>
+            </li>
+            <li>
+                <button type="button" class="social" data-copy="your_discord_name">
+                    <span class="social__name">Discord</span>
+                    <span class="social__handle">valionvn210</span>
+                    <span class="social__arrow" aria-hidden="true">⧉</span>
+                </button>
+            </li>
+            <li>
+            <!-- Sao chép một <li> ở trên để thêm mạng xã hội khác -->
+        </ul>
+        <p class="copy-toast" id="copy-toast" role="status" aria-live="polite"></p>
+    </section>
+
+    <!-- ==== CONTACT ==== -->
+    <section class="section container" id="contact">
+        <h2 class="section__title">Liên hệ</h2>
+        <div class="contact">
+            <div class="contact__intro">
+                <p>Bạn có ý tưởng hoặc muốn hợp tác? Hãy gửi tin nhắn, mình sẽ phản hồi sớm nhất có thể.</p>
+                <p><a href="mailto:azurdevelop@gmail.com">azurdevelop@gmail.com</a></p>
+                <p><a href="tel:+84968969315">+84 96 8969 315</a></p>
+            </div>
+
+            <!-- Thay {your_form_id} bằng ID form của bạn tại https://formspree.io -->
+            <form id="contact-form" class="form" action="https://formspree.io/f/{your_form_id}" method="POST">
+                <label class="field">
+                    <span>Tên của bạn</span>
+                    <input type="text" name="name" autocomplete="name" required>
+                </label>
+                <label class="field">
+                    <span>Email</span>
+                    <input type="email" name="email" autocomplete="email" required>
+                </label>
+                <label class="field">
+                    <span>Nội dung</span>
+                    <textarea name="message" rows="5" required></textarea>
+                </label>
+                <button type="submit" class="btn btn-primary">Gửi tin nhắn</button>
+                <p class="form__status" id="form-status" role="status" aria-live="polite"></p>
+            </form>
+        </div>
+    </section>
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <p>&copy; <span id="year">2026</span> [Tên của bạn]. Mọi quyền được bảo lưu.</p>
+    </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
