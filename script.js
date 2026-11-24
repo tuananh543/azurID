@@ -589,7 +589,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
 /* --------------------- MÀN HÌNH CHÀO --------------------- */
 (function initIntro() {
     const ONLY_ONCE_PER_SESSION = false;   // false = hiện mỗi lần tải trang; true = chỉ một lần mỗi phiên
-    const WAIT_FOR_CLICK = true;   // true = chờ người xem bấm "Nhấn để vào" (nhạc sẽ phát khi bấm)
+    const WAIT_FOR_CLICK = true;           // true = chờ người xem bấm "Nhấn để vào"; false = tự vào sau vài giây
 
     const intro = document.getElementById('intro');
     if (!intro) return;
@@ -697,27 +697,17 @@ document.getElementById('year').textContent = new Date().getFullYear();
         await flyIn(title);
         await wait(250);
         await typeLine(url, 45);
+
+        if (WAIT_FOR_CLICK) {
+            const hint = intro.querySelector('.intro__skip');
+            hint.textContent = 'Nhấn để vào';
+            hint.classList.add('ready-hint');
+            return;                    // chờ người xem bấm; close() chạy khi bấm
+        }
+
         await wait(1000);
         close();
     })();
-    (async function run() {
-    const title = intro.querySelector('.intro__title');
-    const url = intro.querySelector('.intro__url');
-    await wait(400);
-    await flyIn(title);
-    await wait(250);
-    await typeLine(url, 45);
-
-    if (WAIT_FOR_CLICK) {
-        const hint = intro.querySelector('.intro__skip');
-        hint.textContent = 'Nhấn để vào';
-        hint.classList.add('ready-hint');
-        return;                    // chờ người xem bấm, close() sẽ chạy khi bấm
-    }
-
-    await wait(1000);
-    close();
-})();
 })();
 /* --------------------- NHẠC NỀN (lặp lại) --------------------- */
 (function initMusic() {
