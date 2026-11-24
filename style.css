@@ -741,3 +741,26 @@ ul { list-style: none; }
 /* Trong lúc màn hình chào đang hiện: khóa cuộn trang và tạm dừng hiệu ứng ở hero */
 html.intro-lock { overflow: hidden; }
 html.intro-lock .hero > * { animation-play-state: paused; }
+/* ---------- Chữ WELCOME bay vào từ 4 phía ---------- */
+.intro { overflow: hidden; }
+
+.intro__title { visibility: hidden; }
+.intro__title.ready { visibility: visible; }
+
+.fly-word { display: inline-block; white-space: nowrap; }
+
+.fly-letter {
+    display: inline-block;
+    opacity: 0;
+    transform: translate(var(--fx), var(--fy)) rotate(var(--fr));
+    will-change: transform, opacity;
+}
+
+.intro__title.play .fly-letter {
+    animation: fly-in .9s cubic-bezier(.16, .84, .3, 1) forwards;
+    animation-delay: var(--d);
+}
+
+@keyframes fly-in {
+    to { opacity: 1; transform: translate(0, 0) rotate(0); }
+}

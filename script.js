@@ -586,9 +586,9 @@ contactForm.addEventListener('submit', async (e) => {
 
 /* Năm ở footer */
 document.getElementById('year').textContent = new Date().getFullYear();
-/* --------------------- MÀN HÌNH CHÀO (đánh máy) --------------------- */
+/* --------------------- MÀN HÌNH CHÀO --------------------- */
 (function initIntro() {
-    const ONLY_ONCE_PER_SESSION = true;   // đổi thành false để hiện mỗi lần tải lại (tiện khi thử)
+    const ONLY_ONCE_PER_SESSION = false;   // false = hiện mỗi lần tải trang; true = chỉ một lần mỗi phiên
 
     const intro = document.getElementById('intro');
     if (!intro) return;
@@ -621,6 +621,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
 
     const wait = (ms) => new Promise(res => setTimeout(res, ms));
 
+    /* Dòng địa chỉ: đánh máy từng chữ */
     function typeLine(line, speed) {
         return new Promise((resolve) => {
             const done = line.querySelector('.t-done');
@@ -641,11 +642,58 @@ document.getElementById('year').textContent = new Date().getFullYear();
         });
     }
 
+    /* Dòng tiêu đề: từng chữ cái bay vào từ 4 phía (trên, phải, dưới, trái) */
+    function flyIn(el) {
+        const text = el.textContent.trim();
+        el.setAttribute('aria-label', text);
+
+        if (reduceMotion) {
+            el.classList.add('ready');
+            return Promise.resolve();
+        }
+
+        const sides = [
+            ['0px', '-80vh'],    // từ trên
+            ['80vw', '0px'],     // từ phải
+            ['0px', '80vh'],     // từ dưới
+            ['-80vw', '0px']     // từ trái
+        ];
+        const start = Math.floor(Math.random() * 4);
+        const STEP = 60;         // ms giữa hai chữ cái liên tiếp
+        const DURATION = 900;    // ms thời gian bay của mỗi chữ
+        let n = 0;
+
+        el.textContent = '';
+        text.split(' ').forEach((word, wi, words) => {
+            const w = document.createElement('span');
+            w.className = 'fly-word';
+            [...word].forEach((ch) => {
+                const s = document.createElement('span');
+                s.className = 'fly-letter';
+                s.setAttribute('aria-hidden', 'true');
+                s.textContent = ch;
+                const [fx, fy] = sides[(n + start) % 4];
+                s.style.setProperty('--fx', fx);
+                s.style.setProperty('--fy', fy);
+                s.style.setProperty('--fr', `${Math.round((Math.random() - 0.5) * 90)}deg`);
+                s.style.setProperty('--d', `${n * STEP}ms`);
+                w.appendChild(s);
+                n++;
+            });
+            el.appendChild(w);
+            if (wi < words.length - 1) el.appendChild(document.createTextNode(' '));
+        });
+
+        el.classList.add('ready');
+        requestAnimationFrame(() => el.classList.add('play'));
+        return wait((n - 1) * STEP + DURATION);
+    }
+
     (async function run() {
-        const [title, url] = intro.querySelectorAll('[data-type]');
+        const title = intro.querySelector('.intro__title');
+        const url = intro.querySelector('.intro__url');
         await wait(400);
-        await typeLine(title, 75);
-        title.classList.remove('typing');
+        await flyIn(title);
         await wait(250);
         await typeLine(url, 45);
         await wait(1000);
