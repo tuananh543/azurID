@@ -764,3 +764,63 @@ html.intro-lock .hero > * { animation-play-state: paused; }
 @keyframes fly-in {
     to { opacity: 1; transform: translate(0, 0) rotate(0); }
 }
+/* ---------- Nút bật/tắt nhạc ---------- */
+.music-btn {
+    position: fixed;
+    right: 1.5rem;
+    bottom: 1.5rem;
+    z-index: 200;
+    width: 46px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background: rgba(10, 10, 28, .7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    cursor: pointer;
+    transition: border-color var(--ease), transform var(--ease);
+}
+
+.music-btn:hover { border-color: var(--accent-2); transform: translateY(-2px); }
+
+.music-btn span {
+    display: block;
+    width: 3px;
+    height: 6px;
+    border-radius: 2px;
+    background: var(--accent-2);
+}
+
+/* Đang phát: ba thanh nhảy theo nhịp */
+.music-btn.playing span { animation: eq 1s ease-in-out infinite; }
+.music-btn.playing span:nth-child(2) { animation-delay: -.4s; }
+.music-btn.playing span:nth-child(3) { animation-delay: -.8s; }
+
+@keyframes eq {
+    0%, 100% { height: 6px; }
+    50%      { height: 18px; }
+}
+
+/* Đang tắt: mờ đi và có gạch chéo */
+.music-btn:not(.playing) { opacity: .75; }
+.music-btn:not(.playing)::after {
+    content: "";
+    position: absolute;
+    width: 26px;
+    height: 2px;
+    background: var(--muted);
+    transform: rotate(-45deg);
+}
+.intro__skip.ready-hint {
+    font-size: .95rem;
+    letter-spacing: .08em;
+    color: var(--text);
+    opacity: 1;
+    animation: hint-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes hint-pulse { 50% { opacity: .35; } }

@@ -589,6 +589,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
 /* --------------------- MÀN HÌNH CHÀO --------------------- */
 (function initIntro() {
     const ONLY_ONCE_PER_SESSION = false;   // false = hiện mỗi lần tải trang; true = chỉ một lần mỗi phiên
+    const WAIT_FOR_CLICK = true;   // true = chờ người xem bấm "Nhấn để vào" (nhạc sẽ phát khi bấm)
 
     const intro = document.getElementById('intro');
     if (!intro) return;
@@ -699,4 +700,124 @@ document.getElementById('year').textContent = new Date().getFullYear();
         await wait(1000);
         close();
     })();
+    (async function run() {
+    const title = intro.querySelector('.intro__title');
+    const url = intro.querySelector('.intro__url');
+    await wait(400);
+    await flyIn(title);
+    await wait(250);
+    await typeLine(url, 45);
+
+    if (WAIT_FOR_CLICK) {
+        const hint = intro.querySelector('.intro__skip');
+        hint.textContent = 'Nhấn để vào';
+        hint.classList.add('ready-hint');
+        return;                    // chờ người xem bấm, close() sẽ chạy khi bấm
+    }
+
+    await wait(1000);
+    close();
+})();
+})();
+/* --------------------- NHẠC NỀN (lặp lại) --------------------- */
+(function initMusic() {
+    const audio = document.getElementById('bgm');
+    const btn = document.getElementById('music-btn');
+    if (!audio || !btn) return;
+
+    const VOLUME = 0.4;              // 0 = im lặng, 1 = to nhất
+    audio.loop = true;
+    audio.volume = 0;
+
+    // Nhớ lựa chọn tắt nhạc của người xem ở lần trước
+    let wantPlaying = true;
+    try { if (localStorage.getItem('musicOff') === '1') wantPlaying = false; } catch (err) {}
+    function remember(off) {
+        try { localStorage.setItem('musicOff', off ? '1' : '0'); } catch (err) {}
+    }
+
+    /* Tăng/giảm âm lượng từ từ cho êm tai */
+    let fadeTimer;
+    function fadeTo(target, ms = 800, done) {
+        clearInterval(fadeTimer);
+        const stepMs = 40;
+        const steps = Math.max(1, Math.round(ms / stepMs));
+        const from = audio.volume;
+        const delta = (target - from) / steps;
+        let i = 0;
+        fadeTimer = setInterval(() => {
+            i++;
+            audio.volume = Math.min(1, Math.max(0, from + delta * i));
+            if (i >= steps) {
+                clearInterval(fadeTimer);
+                audio.volume = target;
+                if (done) done();
+            }
+        }, stepMs);
+    }
+
+    function updateUI() {
+        const on = !audio.paused;
+        btn.classList.toggle('playing', on);
+        btn.setAttribute('aria-pressed', String(on));
+        btn.setAttribute('aria-label', on ? 'Tắt nhạc' : 'Bật nhạc');
+    }
+    audio.addEventListener('play', updateUI);
+    audio.addEventListener('pause', updateUI);
+
+    /* Trả về true nếu phát được, false nếu trình duyệt chưa cho phép */
+    function play() {
+        return audio.play()
+            .then(() => { fadeTo(VOLUME); return true; })
+            .catch(() => false);
+    }
+
+    function stop() {
+        fadeTo(0, 400, () => audio.pause());
+    }
+
+    /* Nút bật/tắt */
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (audio.paused) { remember(false); wantPlaying = true; play(); }
+        else { remember(true); wantPlaying = false; stop(); }
+    });
+
+    /*
+       Trình duyệt chỉ cho phát tiếng sau một thao tác thật của người xem
+       (bấm chuột, chạm màn hình, nhấn phím). Mình thử phát ở mỗi thao tác
+       cho đến khi thành công.
+    */
+    const GESTURES = ['pointerup', 'click', 'touchend', 'keydown'];
+    function removeGestureListeners() {
+        GESTURES.forEach(ev => window.removeEventListener(ev, onGesture, true));
+    }
+    function onGesture(e) {
+        if (e.target && e.target.closest && e.target.closest('#music-btn')) return;
+        if (!wantPlaying || !audio.paused) { removeGestureListeners(); return; }
+        play().then((ok) => { if (ok) removeGestureListeners(); });
+    }
+    GESTURES.forEach(ev => window.addEventListener(ev, onGesture, true));
+
+    // Một số trình duyệt cho phát ngay, thử luôn
+    if (wantPlaying) play();
+
+    /* Tạm dừng khi chuyển sang tab khác, phát lại khi quay về */
+    let resumeOnVisible = false;
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            if (!audio.paused) { resumeOnVisible = true; audio.pause(); }
+        } else if (resumeOnVisible) {
+            resumeOnVisible = false;
+            play();
+        }
+    });
+
+    /* Nếu không tìm thấy file nhạc thì ẩn nút */
+    audio.addEventListener('error', () => {
+        btn.hidden = true;
+        console.warn('Không tải được nhạc:', audio.currentSrc || audio.src);
+    });
+
+    updateUI();
 })();
